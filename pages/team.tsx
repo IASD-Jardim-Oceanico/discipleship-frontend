@@ -1,18 +1,30 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ReactNode, useRef, useState } from 'react';
+import { FormEvent, ReactNode, useRef, useState } from 'react';
 import { eye } from './components/icons/eye';
 import { eyeSlash } from './components/icons/eyeSlash';
 import Input from './components/Input';
 import ShowPassword from './components/ShowPassword';
+import { createUser } from './services/user';
 
 function Registration() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const nameRef = useRef('');
-  const emailRef = useRef('');
-  const phoneRef = useRef('');
-  const passwordRef = useRef('');
-  const confirmPasswordRef = useRef('');
+  const fullNameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const confirmPasswordRef = useRef<HTMLInputElement>(null);
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    await createUser({
+      email: fullNameRef.current?.value,
+      password: passwordRef.current?.value,
+      role: 'USER',
+      full_name: fullNameRef.current?.value,
+      phone: passwordRef.current?.value,
+    });
+  }
 
   return (
     <main className='bg-gray-200 min-h-screen flex flex-col'>
@@ -27,13 +39,13 @@ function Registration() {
             />
             <span className=''>Cadastre-se</span>
           </h1>
-          <form onSubmit={() => {}}>
-            <Input type='text' name='fullname' placeholder='Nome Completo' ref={nameRef} />
+          <form onSubmit={(e) => handleSubmit(e)}>
+            <Input type='text' name='fullname' placeholder='Nome Completo' inputRef={fullNameRef} />
 
-            <Input type='text' name='email' placeholder='Email' ref={emailRef} />
+            <Input type='text' name='email' placeholder='Email' inputRef={emailRef} />
 
             <div className='relative'>
-              <Input type='text' name='phone' placeholder='Telefone' ref={phoneRef} />
+              <Input type='text' name='phone' placeholder='Telefone' inputRef={phoneRef} />
               <div className='flex items-center absolute inset-y-0 right-2 mr-3  text-sm leading-5 text-[#2BBFCF]'>
                 *
               </div>
@@ -47,7 +59,7 @@ function Registration() {
                 type={showPassword ? 'text' : 'password'}
                 name='password'
                 placeholder='Senha'
-                ref={passwordRef}
+                inputRef={passwordRef}
               />
             </ShowPassword>
             <ShowPassword
@@ -58,7 +70,7 @@ function Registration() {
                 type={showPassword ? 'text' : 'password'}
                 name='confirm_password'
                 placeholder='Confimar Senha'
-                ref={confirmPasswordRef}
+                inputRef={confirmPasswordRef}
               />
             </ShowPassword>
 
