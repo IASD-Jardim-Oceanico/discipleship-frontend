@@ -1,13 +1,13 @@
-import React, { LegacyRef, MutableRefObject } from 'react';
+import React, { LegacyRef, MutableRefObject, Ref, RefObject } from 'react';
 
 type Input = {
   type: string;
   name: string;
   placeholder: string;
-  ref?: MutableRefObject<string>;
+  inputRef?: RefObject<HTMLInputElement>;
 };
 
-function Input({ type, name, placeholder, ref, ...props }: Input) {
+function Input({ type, name, placeholder,inputRef, ...props }: Input) {
   return (
     <input
       type={type}
@@ -15,7 +15,7 @@ function Input({ type, name, placeholder, ref, ...props }: Input) {
       name={name}
       placeholder={placeholder}
       {...props}
-      ref={ref as LegacyRef<HTMLInputElement> | undefined}
+      ref={inputRef}
     />
   );
 }
