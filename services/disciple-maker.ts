@@ -1,6 +1,6 @@
 import { api } from './api';
 
-type CreateUserDTO = {
+type DiscipleMakerDTO = {
   email: string | undefined;
   password: string | undefined;
   role: string;
@@ -8,6 +8,6 @@ type CreateUserDTO = {
   phone?: string | undefined;
 };
 
-export function createUser(createUserDTO: CreateUserDTO) {
-  return api.post('/users', createUserDTO);
+export function createDiscipleMaker(discipleMaker: DiscipleMakerDTO) {
+  return api.post('/disciple-maker', discipleMaker);
 }
