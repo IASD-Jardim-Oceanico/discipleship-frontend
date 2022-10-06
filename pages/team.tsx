@@ -1,11 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { FormEvent, ReactNode, useRef, useState } from 'react';
-import { eye } from './components/icons/eye';
-import { eyeSlash } from './components/icons/eyeSlash';
-import Input from './components/Input';
-import ShowPassword from './components/ShowPassword';
-import { createUser } from './services/user';
+import { FormEvent, useRef, useState } from 'react';
+import Input from '../components/Input';
+import ShowPassword from '../components/ShowPassword';
+import { createDiscipleMaker } from '../services/disciple-maker';
 
 function Registration() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -17,13 +15,17 @@ function Registration() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    await createUser({
-      email: fullNameRef.current?.value,
+
+    const payload = {
+      email: emailRef.current?.value,
       password: passwordRef.current?.value,
-      role: 'USER',
+      role: 'DISCIPLE_MAKER',
       full_name: fullNameRef.current?.value,
-      phone: passwordRef.current?.value,
-    });
+      phone: phoneRef.current?.value,
+    };
+
+
+    await createDiscipleMaker(payload);
   }
 
   return (
