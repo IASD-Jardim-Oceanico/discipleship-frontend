@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 export const schema = yup.object({
   fullName: yup.string().required('Precisa de um nome').min(3, 'O nome não pode ser menor que 3'),
-  email: yup.string().email().required('Email inválido'),
+  email: yup.string().email('Email inválido').required('Email inválido'),
   password: yup
     .string()
     .required('A senha é obrigatória')
@@ -13,3 +13,5 @@ export const schema = yup.object({
     .oneOf([yup.ref('password')], 'As senhas devem ser iguais'),
   phone: yup.string().optional().length(11, 'Número de telefone inválido'),
 });
+
+export type DiscipleMaker = yup.InferType<typeof schema>;
