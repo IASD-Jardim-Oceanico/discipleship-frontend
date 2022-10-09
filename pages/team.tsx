@@ -1,32 +1,48 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { FormEvent, useRef, useState } from 'react';
+import { useState } from 'react';
 import Input from '../components/Input';
 import ShowPassword from '../components/ShowPassword';
 import { createDiscipleMaker } from '../services/disciple-maker';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { DiscipleMakerDTO } from '../interfaces';
+
+const schema = yup.object({
+  fullName: yup.string().required('Precisa de um nome').min(3, 'O nome não pode ser menor que 3'),
+  email: yup.string().email().required('Email inválido'),
+  password: yup
+    .string()
+    .required('A senha é obrigatória')
+    .min(8, 'A senha precisa ter 8 ou mais caracteres'),
+  confirmPassword: yup
+    .string()
+    .required('A senha é obrigatória')
+    .oneOf([yup.ref('password')], 'As senhas devem ser iguais'),
+  phone: yup.string().optional().length(11, 'Número de telefone inválido'),
+});
+
+interface DiscipleMaker extends DiscipleMakerDTO {
+  confirmPassword: string;
+}
 
 function Registration() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<DiscipleMaker>({
+    resolver: yupResolver(schema),
+  });
+
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const fullNameRef = useRef<HTMLInputElement>(null);
-  const emailRef = useRef<HTMLInputElement>(null);
-  const phoneRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
-  const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    const payload = {
-      email: emailRef.current?.value,
-      password: passwordRef.current?.value,
-      role: 'DISCIPLE_MAKER',
-      full_name: fullNameRef.current?.value,
-      phone: phoneRef.current?.value,
-    };
-
-
-    await createDiscipleMaker(payload);
-  }
+  const onSubmit: SubmitHandler<DiscipleMaker> = (data) => {
+    const {confirmPassword, ...payload} = data;
+    payload.role = 'DISCIPLE_MAKER';
+    return createDiscipleMaker(payload);
+  };
 
   return (
     <main className='bg-gray-200 min-h-screen flex flex-col'>
@@ -41,38 +57,42 @@ function Registration() {
             />
             <span className=''>Cadastre-se</span>
           </h1>
-          <form onSubmit={(e) => handleSubmit(e)}>
-            <Input type='text' name='fullname' placeholder='Nome Completo' inputRef={fullNameRef} />
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <span className='text-red-200 text-sm'>{errors.fullName?.message}</span>
+            <Input type='text' placeholder='Nome Completo' {...register('fullName')} />
 
-            <Input type='text' name='email' placeholder='Email' inputRef={emailRef} />
+            <span className='text-red-200 text-sm'>{errors.email?.message}</span>
+            <Input type='text' placeholder='Email' {...register('email')} />
 
             <div className='relative'>
-              <Input type='text' name='phone' placeholder='Telefone' inputRef={phoneRef} />
+              <span className='text-red-200 text-sm'>{errors.phone?.message}</span>
+              <Input type='text' placeholder='Telefone' {...register('phone')} />
+
               <div className='flex items-center absolute inset-y-0 right-2 mr-3  text-sm leading-5 text-[#2BBFCF]'>
                 *
               </div>
             </div>
 
+            <span className='text-red-200 text-sm'>{errors.password?.message}</span>
             <ShowPassword
               showPassword={showPassword}
               onClick={() => setShowPassword(!showPassword)}
             >
               <Input
                 type={showPassword ? 'text' : 'password'}
-                name='password'
                 placeholder='Senha'
-                inputRef={passwordRef}
+                {...register('password')}
               />
             </ShowPassword>
+            <span className='text-red-200 text-sm'>{errors.confirmPassword?.message}</span>
             <ShowPassword
               showPassword={showPassword}
               onClick={() => setShowPassword(!showPassword)}
             >
               <Input
                 type={showPassword ? 'text' : 'password'}
-                name='confirm_password'
                 placeholder='Confimar Senha'
-                inputRef={confirmPasswordRef}
+                {...register('confirmPassword')}
               />
             </ShowPassword>
 
