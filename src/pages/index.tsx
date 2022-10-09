@@ -23,7 +23,7 @@ const Home: NextPage = () => {
             <p className='mt-2 text-center text-sm text-gray-600'>
               Ou{' '}
               <span className='font-medium text-indigo-600 hover:text-indigo-500'>
-                <Link href='/team'>crie cadastro e comece o discipulado</Link>
+                <Link href='/team'>crie o cadastro e comece o discipulado</Link>
               </span>
             </p>
           </div>

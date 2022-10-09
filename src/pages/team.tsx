@@ -6,22 +6,8 @@ import ShowPassword from '../components/ShowPassword';
 import { createDiscipleMaker } from '../services/disciple-maker';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { DiscipleMakerDTO } from '../interfaces';
-
-const schema = yup.object({
-  fullName: yup.string().required('Precisa de um nome').min(3, 'O nome não pode ser menor que 3'),
-  email: yup.string().email().required('Email inválido'),
-  password: yup
-    .string()
-    .required('A senha é obrigatória')
-    .min(8, 'A senha precisa ter 8 ou mais caracteres'),
-  confirmPassword: yup
-    .string()
-    .required('A senha é obrigatória')
-    .oneOf([yup.ref('password')], 'As senhas devem ser iguais'),
-  phone: yup.string().optional().length(11, 'Número de telefone inválido'),
-});
+import { schema } from '../schemas/createDiscipleMaker';
 
 interface DiscipleMaker extends DiscipleMakerDTO {
   confirmPassword: string;
@@ -39,7 +25,7 @@ function Registration() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const onSubmit: SubmitHandler<DiscipleMaker> = (data) => {
-    const {confirmPassword, ...payload} = data;
+    const { confirmPassword, ...payload } = data;
     payload.role = 'DISCIPLE_MAKER';
     return createDiscipleMaker(payload);
   };
