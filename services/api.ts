@@ -8,16 +8,14 @@ function getBaseURL() {
 }
 
 function getToken() {
-  return null
+  return null;
 }
-
 
 export const api = axios.create({
   baseURL: getBaseURL(),
 });
 
-
 api.interceptors.request.use((config) => {
-  config.headers = {Authorization: getToken() as unknown as string | number | boolean}
-  return config
-})
+  config.headers = { Authorization: getToken() as unknown as string | number | boolean };
+  return config;
+});
