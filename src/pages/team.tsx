@@ -18,16 +18,18 @@ function Registration() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<DiscipleMaker>({
     resolver: yupResolver(schema),
   });
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const onSubmit: SubmitHandler<DiscipleMaker> = (data) => {
+  const onSubmit: SubmitHandler<DiscipleMaker> = async (data) => {
     const { confirmPassword, ...payload } = data;
     payload.role = 'DISCIPLE_MAKER';
-    return createDiscipleMaker(payload);
+    await createDiscipleMaker(payload);
+    reset();
   };
 
   return (
